@@ -8,7 +8,18 @@ GRID_LEN = 5
 
 
 class BingoBoard:
+    """Class representing a bingo board."""
+
     def __init__(self, grid: np.ndarray) -> None:
+        """Initializes a BingoBoard.
+
+        Parameters
+        ----------
+        grid
+            An array with shape (GRID_LEN, GRID_LEN), representing the numbers
+            on the bingo board.
+        """
+
         if not grid.shape == (GRID_LEN, GRID_LEN):
             raise ValueError(f"BingoBoard grid must have shape {(GRID_LEN, GRID_LEN)}.")
 
@@ -24,22 +35,24 @@ class BingoBoard:
         return np.add(bingo_cols, bingo_rows)
 
     def mark_number(self, number: int) -> None:
-        """Marks a number if it is contained in the grid."""
+        """Marks a number if it is in the grid."""
 
         self.marked = np.add(self.marked, self.grid == number)
 
     def get_unmarked_sum(self) -> int:
-        """Returns the sum of all unmakred numbers"""
+        """Returns the sum of all unmarked numbers"""
 
         unmarked = self.marked == False
 
         return self.grid[unmarked].sum(dtype=int)
 
 
-def get_input_sequence(filename: str) -> Sequence[int]:
+def get_numbers(filename: str) -> Sequence[int]:
     """Returns the bingo number sequence given a input file."""
 
-    return np.loadtxt(filename, delimiter=",", max_rows=1, dtype=int)
+    numbers = np.loadtxt(filename, delimiter=",", max_rows=1, dtype=int)
+
+    return numbers.tolist()
 
 
 def get_boards(filename: str) -> Dict[int, BingoBoard]:
@@ -72,7 +85,7 @@ def play_bingo(
 
     Returns
     -------
-        ID and the score of the winning board.
+        ID and score of the winning board.
     """
 
     for number in numbers:
@@ -112,13 +125,13 @@ def play_losing_bingo(
 
 
 if __name__ == "__main__":
-    number_sequence = get_input_sequence(INPUT_FILE)
+    numbers = get_numbers(INPUT_FILE)
     boards = get_boards(INPUT_FILE)
 
     print("part 1:")
-    winning_id, winning_score = play_bingo(boards=boards, numbers=number_sequence)
+    winning_id, winning_score = play_bingo(boards=boards, numbers=numbers)
     print(f"Bingo for board {winning_id}! The score was: {winning_score}")
 
     print("part 2:")
-    losing_id, losing_score = play_losing_bingo(boards=boards, numbers=number_sequence)
+    losing_id, losing_score = play_losing_bingo(boards=boards, numbers=numbers)
     print(f"Last board to get a Bingo was {losing_id}! The score was: {losing_score}")
