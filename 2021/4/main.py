@@ -8,17 +8,17 @@ GRID_LEN = 5
 
 
 class BingoBoard:
-    """Class representing a bingo board."""
+    """Class representing a bingo board.
+
+    Parameters
+    ----------
+    grid
+        An array with shape (GRID_LEN, GRID_LEN), representing the numbers
+        on the bingo board.
+    """
 
     def __init__(self, grid: np.ndarray) -> None:
-        """Initializes a BingoBoard.
-
-        Parameters
-        ----------
-        grid
-            An array with shape (GRID_LEN, GRID_LEN), representing the numbers
-            on the bingo board.
-        """
+        """Initializes a BingoBoard."""
 
         if not grid.shape == (GRID_LEN, GRID_LEN):
             raise ValueError(f"BingoBoard grid must have shape {(GRID_LEN, GRID_LEN)}.")
@@ -114,14 +114,18 @@ def play_losing_bingo(
         Sequence of numbers to play bingo with.
     """
 
-    remaining_boards = boards.copy()
-    while len(remaining_boards) > 1:
-        id, _ = play_bingo(boards=remaining_boards, numbers=numbers)
-        remaining_boards.pop(id)
+    for number in numbers:
+        remaining_boards = boards.copy()
 
-    loser_id, loser_score = play_bingo(boards=remaining_boards, numbers=numbers)
+        if len(remaining_boards) == 1:
+            break
 
-    return loser_id, loser_score
+        for id, board in remaining_boards.items():
+            board.mark_number(number)
+            if board.has_bingo():
+                boards.pop(id)
+
+    return play_bingo(boards=boards, numbers=numbers)
 
 
 if __name__ == "__main__":
