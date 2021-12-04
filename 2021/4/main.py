@@ -13,13 +13,11 @@ class BingoBoard:
     Parameters
     ----------
     grid
-        An array with shape (GRID_LEN, GRID_LEN), representing the numbers
-        on the bingo board.
+        An array with shape (`GRID_LEN`, `GRID_LEN`), representing the 
+        number-grid on the board.
     """
 
     def __init__(self, grid: np.ndarray) -> None:
-        """Initializes a BingoBoard."""
-
         if not grid.shape == (GRID_LEN, GRID_LEN):
             raise ValueError(f"BingoBoard grid must have shape {(GRID_LEN, GRID_LEN)}.")
 
@@ -27,12 +25,12 @@ class BingoBoard:
         self.marked = np.zeros_like(grid, dtype=bool)
 
     def mark_number(self, number: int) -> None:
-        """Marks a number if it is in the grid."""
+        """Marks a number if it is on the boards."""
 
         self.marked = np.add(self.marked, self.grid == number)
 
     def has_bingo(self) -> bool:
-        """Returns True if the the board has bingo, and False if else."""
+        """Returns True if the the board has a bingo, and False if not."""
 
         bingo_rows = any(row.sum() == GRID_LEN for row in self.marked)
         bingo_cols = any(col.sum() == GRID_LEN for col in self.marked.transpose())
@@ -42,9 +40,7 @@ class BingoBoard:
     def get_unmarked_sum(self) -> int:
         """Returns the sum of all unmarked numbers"""
 
-        unmarked = self.marked == False
-
-        return self.grid[unmarked].sum(dtype=int)
+        return self.grid[self.marked == False].sum(dtype=int)
 
 
 def get_numbers(filename: str) -> List[int]:
@@ -72,9 +68,7 @@ def get_boards(filename: str) -> Dict[int, BingoBoard]:
 def play_bingo(
     boards: Dict[int, BingoBoard], numbers: Sequence[int]
 ) -> Tuple[int, int]:
-    """Plays bingo with a set of boards.
-
-    After the first board has gotten a bingo, the game stops.
+    """Returns the ID and score of the board that finished first.
 
     Parameters
     ----------
@@ -85,7 +79,7 @@ def play_bingo(
 
     Returns
     -------
-        ID and score of the winning board.
+        ID and score of the board that gets the first bingo.
     """
 
     for number in numbers:
@@ -102,9 +96,7 @@ def play_bingo(
 def play_losing_bingo(
     boards: Dict[int, BingoBoard], numbers: Sequence[int]
 ) -> Tuple[int, int]:
-    """Plays bingo with a set of boards.
-
-    The game stops when the final board has gotten a bingo.
+    """Returns the ID and score of the board that finished last.
 
     Parameters
     ----------
@@ -112,6 +104,10 @@ def play_losing_bingo(
         Dictionary of BingoBoard's and associated IDs.
     numbers
         Sequence of numbers to play bingo with.
+
+    Returns
+    -------
+        ID and score of the board that gets the last bingo.
     """
 
     for number in numbers:
