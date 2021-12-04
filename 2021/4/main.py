@@ -1,4 +1,4 @@
-from typing import Dict, Sequence, Tuple
+from typing import Dict, List, Sequence, Tuple
 
 import numpy as np
 
@@ -26,18 +26,18 @@ class BingoBoard:
         self.grid = grid
         self.marked = np.zeros_like(grid, dtype=bool)
 
-    def has_bingo(self):
+    def mark_number(self, number: int) -> None:
+        """Marks a number if it is in the grid."""
+
+        self.marked = np.add(self.marked, self.grid == number)
+
+    def has_bingo(self) -> bool:
         """Returns True if the the board has bingo, and False if else."""
 
         bingo_rows = any(row.sum() == GRID_LEN for row in self.marked)
         bingo_cols = any(col.sum() == GRID_LEN for col in self.marked.transpose())
 
         return np.add(bingo_cols, bingo_rows)
-
-    def mark_number(self, number: int) -> None:
-        """Marks a number if it is in the grid."""
-
-        self.marked = np.add(self.marked, self.grid == number)
 
     def get_unmarked_sum(self) -> int:
         """Returns the sum of all unmarked numbers"""
@@ -47,8 +47,8 @@ class BingoBoard:
         return self.grid[unmarked].sum(dtype=int)
 
 
-def get_numbers(filename: str) -> Sequence[int]:
-    """Returns the bingo number sequence given a input file."""
+def get_numbers(filename: str) -> List[int]:
+    """Returns the bingo number sequence."""
 
     numbers = np.loadtxt(filename, delimiter=",", max_rows=1, dtype=int)
 
@@ -56,7 +56,7 @@ def get_numbers(filename: str) -> Sequence[int]:
 
 
 def get_boards(filename: str) -> Dict[int, BingoBoard]:
-    """Returns a list of BingoBoard's initialized from a input file."""
+    """Returns a dictionary of IDs and BingoBoard's."""
 
     bingo_data = np.loadtxt(filename, skiprows=2)
     n_boards = int(len(bingo_data) / GRID_LEN)
