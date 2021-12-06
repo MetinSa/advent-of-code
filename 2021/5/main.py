@@ -74,7 +74,7 @@ def read_lines(filename: str) -> List[Line]:
 
 
 def get_max_value_from_lines(lines: List[Line]) -> int:
-    coords = (astuple(line)[2:] for line in lines)
+    coords = (astuple(line) for line in lines)
 
     return max(max(coords, key=lambda item: max(item)))
 
