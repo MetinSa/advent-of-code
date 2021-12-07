@@ -11,20 +11,21 @@ FuelRateType = Union[Literal["linear"], Literal["triangular"]]
 def get_minimum_fuel_required(
     positions: np.ndarray, fuel_rate: FuelRateType
 ) -> Tuple[int, int]:
-    std = positions.std()
-    mean = positions.mean()
 
-    min_new_position = round(mean - std)
+    mean = positions.mean()
+    std = positions.std()
+
     max_new_position = round(mean + std)
+    min_new_position = round(mean - std)
     new_positions = range(min_new_position, max_new_position)
 
-    fuel_function = get_fuel_function(fuel_rate)
-    fuel = fuel_function(old_positions=positions, new_positions=new_positions)
+    get_fuel = get_fuel_function(fuel_rate)
+    fuel = get_fuel(old_positions=positions, new_positions=new_positions)
 
-    min_fuel = fuel.min()
+    min_fuel_required = fuel.min()
     new_position = new_positions[fuel.argmin()]
 
-    return min_fuel, new_position
+    return min_fuel_required, new_position
 
 
 class FuelStrategy(Protocol):
@@ -43,8 +44,8 @@ def fuel_linear(old_positions: np.ndarray, new_positions: range) -> np.ndarray:
 def fuel_triangular(old_positions: np.ndarray, new_positions: range) -> np.ndarray:
     fuel = np.zeros(len(new_positions), dtype=int)
     for idx, new_position in enumerate(new_positions):
-        n = abs(old_positions - new_position)
-        fuel[idx] = ((n ** 2 + n) / 2).sum().round()
+        triangular_number = abs(old_positions - new_position)
+        fuel[idx] = ((triangular_number ** 2 + triangular_number) / 2).sum().round()
 
     return fuel
 
@@ -70,15 +71,15 @@ if __name__ == "__main__":
         positions=positions, fuel_rate="linear"
     )
     print(
-        f"Minimum fuel ({min_fuel}) is used when aligning in horizontal "
+        f"Minimum fuel is {min_fuel} when aligning in horizontal"
         f"position {new_position}."
     )
 
-    print("Part 2:")
+    print("\nPart 2:")
     min_fuel, new_position = get_minimum_fuel_required(
         positions=positions, fuel_rate="triangular"
     )
     print(
-        f"Minimum fuel ({min_fuel}) is used when aligning in horizontal "
+        f"Minimum fuel is {min_fuel} when aligning in horizontal "
         f"position {new_position}."
     )
