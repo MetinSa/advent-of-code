@@ -44,8 +44,8 @@ def fuel_linear(old_positions: np.ndarray, new_positions: range) -> np.ndarray:
 def fuel_triangular(old_positions: np.ndarray, new_positions: range) -> np.ndarray:
     fuel = np.zeros(len(new_positions), dtype=int)
     for idx, new_position in enumerate(new_positions):
-        triangular_number = abs(old_positions - new_position)
-        fuel[idx] = ((triangular_number ** 2 + triangular_number) / 2).sum().round()
+        n = abs(old_positions - new_position)
+        fuel[idx] = (n * (n + 1) / 2).sum().round()
 
     return fuel
 
