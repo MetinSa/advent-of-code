@@ -7,6 +7,7 @@ authors = ["Metin San <metinisan@gmail.com>"]
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
 numpy = "^1.21.4"
+scipy = "^1.7.3"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"
