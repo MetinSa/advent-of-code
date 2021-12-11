@@ -20,12 +20,12 @@ def read_grid(filename: str) -> np.ndarray:
 @dataclass
 class Simulator:
     grid: np.ndarray
-    day: int = 0
+    step: int = 0
     total_flashes: int = 0
-    simultaneous_flash_days: List[int] = field(default_factory=list)
+    simultaneous_flash_steps: List[int] = field(default_factory=list)
 
-    def simulate_day(self) -> None:
-        self.day += 1
+    def simulate_step(self) -> None:
+        self.step += 1
         grid = self.grid.copy() + 1
         padded_grid = np.pad(grid, pad_width=(1, 1))
 
@@ -49,7 +49,7 @@ class Simulator:
         padded_grid[padded_grid > MAX_VALUE] = 0
         self.grid = padded_grid[1:-1, 1:-1]
         if (self.grid == 0).all():
-            self.simultaneous_flash_days.append(self.day)
+            self.simultaneous_flash_steps.append(self.step)
 
 
 if __name__ == "__main__":
@@ -59,15 +59,15 @@ if __name__ == "__main__":
     print("Part 1:")
     simulator_part1 = Simulator(grid)
     for i in range(100):
-        simulator_part1.simulate_day()
+        simulator_part1.simulate_step()
     print(
-        f"There were {simulator_part1.total_flashes} after {simulator_part1.day} days."
+        f"There were {simulator_part1.total_flashes} after {simulator_part1.step} steps."
     )
 
     print("\nPart 2:")
     simulator_part2 = Simulator(grid)
     while True:
-        simulator_part2.simulate_day()
-        if simulator_part2.simultaneous_flash_days:
+        simulator_part2.simulate_step()
+        if simulator_part2.simultaneous_flash_steps:
             break
-    print(f"The first step during which all octopuses flashes is {simulator_part2.day}")
+    print(f"The first step during which all octopuses flashes is {simulator_part2.step}")
