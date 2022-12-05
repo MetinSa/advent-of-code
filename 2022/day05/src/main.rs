@@ -7,7 +7,7 @@ fn main() {
 
     let mut crate_stacks: Vec<VecDeque<String>> = Vec::new();
     for (idx, line) in data.lines().enumerate() {
-        let create_layer: Vec<String> = line
+        let crate_layer: Vec<String> = line
             .as_bytes()
             .chunks(4)
             .map(str::from_utf8)
@@ -17,22 +17,22 @@ fn main() {
             .map(|x| x.trim().replace("[", "").replace("]", ""))
             .collect();
 
-        if create_layer[0] == "1" {
+        if crate_layer[0] == "1" {
             // Finished with crate layers
             break;
         }
 
         if idx == 0 {
             // Initialize create stack layout
-            for _ in 0..create_layer.len() {
+            for _ in 0..crate_layer.len() {
                 crate_stacks.push(VecDeque::new());
             }
         }
-        for (idx1, c) in create_layer.iter().enumerate() {
+        for (idx, c) in crate_layer.iter().enumerate() {
             if c.is_empty() {
                 continue;
             }
-            crate_stacks[idx1].push_front(c.to_string());
+            crate_stacks[idx].push_front(c.to_string());
         }
     }
 
