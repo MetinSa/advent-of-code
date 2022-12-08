@@ -43,9 +43,10 @@ fn get_visibility_grid(tree_grid: &Vec<Vec<u8>>) -> Vec<Vec<bool>> {
         }
     }
 
-    // From left to right
     let mut tallest: u8;
     let mut height: u8;
+
+    // From left to right
     for i in 1..n_rows - 1 {
         tallest = tree_grid[i][0];
         for j in 1..n_cols - 1 {
@@ -61,8 +62,6 @@ fn get_visibility_grid(tree_grid: &Vec<Vec<u8>>) -> Vec<Vec<bool>> {
     }
 
     // From right to left
-    let mut tallest: u8;
-    let mut height: u8;
     for i in (1..n_rows - 1).rev() {
         tallest = tree_grid[i][n_cols - 1];
         for j in (1..n_cols - 1).rev() {
@@ -78,8 +77,6 @@ fn get_visibility_grid(tree_grid: &Vec<Vec<u8>>) -> Vec<Vec<bool>> {
     }
 
     // From top to bottom
-    let mut tallest: u8;
-    let mut height: u8;
     for j in 1..n_cols - 1 {
         tallest = tree_grid[0][j];
         for i in 1..n_rows - 1 {
@@ -95,8 +92,6 @@ fn get_visibility_grid(tree_grid: &Vec<Vec<u8>>) -> Vec<Vec<bool>> {
     }
 
     // From top to bottom
-    let mut tallest: u8;
-    let mut height: u8;
     for j in (1..n_cols - 1).rev() {
         tallest = tree_grid[n_cols - 1][j];
         for i in (1..n_rows - 1).rev() {
