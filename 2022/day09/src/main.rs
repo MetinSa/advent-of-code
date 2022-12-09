@@ -28,7 +28,7 @@ fn main() {
     );
 }
 
-fn get_tail_visited_grid(input_vec: &Vec<String>, n_knots: usize) -> Vec<Vec<bool>> {
+fn get_tail_visited_grid(commands: &Vec<String>, n_knots: usize) -> Vec<Vec<bool>> {
     let mut knot_indicies: Vec<(isize, isize)> = Vec::new();
     for _ in 0..n_knots {
         knot_indicies.push((N_ROWS as isize / 2, N_COLS as isize / 2));
@@ -40,8 +40,8 @@ fn get_tail_visited_grid(input_vec: &Vec<String>, n_knots: usize) -> Vec<Vec<boo
     let initial_direction_mapping: HashMap<&str, (isize, isize)> =
         HashMap::from([("U", (-1, 0)), ("D", (1, 0)), ("L", (0, -1)), ("R", (0, 1))]);
 
-    for line in input_vec.iter() {
-        let (direction, distance) = line.split_once(" ").unwrap();
+    for command in commands.iter() {
+        let (direction, distance) = command.split_once(" ").unwrap();
         let (head_row_offset, head_col_offset) = initial_direction_mapping.get(direction).unwrap();
 
         for _ in 0..distance.parse().unwrap() {
