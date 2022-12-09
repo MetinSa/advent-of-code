@@ -3,7 +3,7 @@ use std::fs;
 
 const N_ROWS: usize = 1000;
 const N_COLS: usize = 1000;
-const N_KNOTS: usize = 9;
+const N_KNOTS: usize = 10;
 fn main() {
     let input_vec: Vec<String> = fs::read_to_string("input.txt")
         .expect("Error reading input.txt")
@@ -12,22 +12,15 @@ fn main() {
         .collect();
 
     let mut knot_grids: Vec<[[bool; N_COLS]; N_ROWS]> = Vec::new();
-    let mut head_grid = [[false; N_COLS]; N_ROWS];
     let mut tail_visited_grid = [[false; N_COLS]; N_ROWS];
     tail_visited_grid[N_ROWS / 2][N_COLS / 2] = true;
 
-    let mut head_indices: (isize, isize) = (N_ROWS as isize / 2, N_COLS as isize / 2);
     let mut knot_indicies: Vec<(isize, isize)> = Vec::new();
     for i in 0..N_KNOTS {
-        knot_grids.push(head_grid.clone());
+        knot_grids.push([[false; N_COLS]; N_ROWS]);
         knot_indicies.push((N_ROWS as isize / 2, N_COLS as isize / 2));
         knot_grids[i][knot_indicies[i].0 as usize][knot_indicies[i].1 as usize] = true;
     }
-    let mut new_head_indices: (isize, isize) = head_indices;
-    // let mut next_tail_indices: (isize, isize);
-
-    head_grid[head_indices.0 as usize][head_indices.1 as usize] = true;
-    // tail_grid[tail_indices.0 as usize][tail_indices.1 as usize] = true;
 
     let initial_direction_mapping: HashMap<&str, (isize, isize)> =
         HashMap::from([("U", (-1, 0)), ("D", (1, 0)), ("L", (0, -1)), ("R", (0, 1))]);
@@ -38,26 +31,23 @@ fn main() {
         let (head_row_offset, head_col_offset) = initial_direction_mapping.get(direction).unwrap();
 
         for _ in 0..distance.parse().unwrap() {
-            new_head_indices.0 += head_row_offset;
-            new_head_indices.1 += head_col_offset;
+            knot_grids[0][knot_indicies[0].0 as usize][knot_indicies[0].1 as usize] = false;
 
-            head_grid[head_indices.0 as usize][head_indices.1 as usize] = false;
-            head_grid[new_head_indices.0 as usize][new_head_indices.1 as usize] = true;
-            head_indices = new_head_indices;
+            knot_indicies[0].0 += head_row_offset;
+            knot_indicies[0].1 += head_col_offset;
 
-            let mut prev_knot_indices = head_indices;
+            knot_grids[0][knot_indicies[0].0 as usize][knot_indicies[0].1 as usize] = true;
 
-            for i in 0..N_KNOTS {
-                if i > 0 {
-                    prev_knot_indices = knot_indicies[i - 1];
-                }
-
+            for i in 1..N_KNOTS {
+                let prev_knot_indices = knot_indicies[i - 1];
                 if (prev_knot_indices.0 - knot_indicies[i].0).abs() >= 2
                     || (prev_knot_indices.1 - knot_indicies[i].1).abs() >= 2
                 {
                     knot_grids[i][knot_indicies[i].0 as usize][knot_indicies[i].1 as usize] = false;
+
                     knot_indicies[i].0 += (prev_knot_indices.0 - knot_indicies[i].0).signum();
                     knot_indicies[i].1 += (prev_knot_indices.1 - knot_indicies[i].1).signum();
+
                     knot_grids[i][knot_indicies[i].0 as usize][knot_indicies[i].1 as usize] = true;
                 }
             }
