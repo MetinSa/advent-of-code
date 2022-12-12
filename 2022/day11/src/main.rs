@@ -9,7 +9,7 @@ fn main() {
 
     let mut monkies = parse_initial_monkey_config(&input);
 
-    let modulus: i64 = monkies.iter().map(|monkey| monkey.divide_by).product();
+    let monkey_modulus: i64 = monkies.iter().map(|monkey| monkey.divide_by).product();
 
     for _ in 0..N_ROUNDS {
         for i in 0..monkies.len() {
@@ -28,7 +28,7 @@ fn main() {
                         panic!("Unknown operator type {}", other)
                     }
                 };
-                updated_item %= modulus;
+                updated_item %= monkey_modulus;
 
                 // Part 1)
                 // let new_worry_level = (updated_item as f64/3f64) as i64;
@@ -50,7 +50,11 @@ fn main() {
     monkies.reverse();
     println!(
         "{}",
-        monkies[0].inspected_n_items * monkies[1].inspected_n_items
+        monkies
+            .iter()
+            .take(2)
+            .map(|monkey| monkey.inspected_n_items)
+            .product::<i64>()
     )
 }
 
