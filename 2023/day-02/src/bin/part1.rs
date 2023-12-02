@@ -5,7 +5,6 @@ fn main() {
 }
 
 #[derive(Debug)]
-
 struct Set {
     blue: u32,
     red: u32,

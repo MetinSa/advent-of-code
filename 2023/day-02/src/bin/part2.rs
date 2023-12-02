@@ -5,7 +5,6 @@ fn main() {
 }
 
 #[derive(Debug)]
-
 struct Set {
     blue: u32,
     red: u32,
@@ -36,9 +35,9 @@ fn process(input: &str) -> u32 {
         games.push(sets);
     }
 
-    let mut min_sets: Vec<Set> = Vec::new();
+    let mut min_size_sets: Vec<Set> = Vec::new();
     games.iter().for_each(|game| {
-        min_sets.push(Set {
+        min_size_sets.push(Set {
             blue: game.iter().max_by_key(|set| set.blue).unwrap().blue,
             red: game.iter().max_by_key(|set| set.red).unwrap().red,
             green: game.iter().max_by_key(|set| set.green).unwrap().green,
@@ -46,7 +45,7 @@ fn process(input: &str) -> u32 {
     });
 
     let mut score = 0;
-    min_sets.iter().for_each(|set| {
+    min_size_sets.iter().for_each(|set| {
         score += set.blue * set.red * set.green;
     });
     score
