@@ -1,5 +1,3 @@
-use std::{collections::HashSet};
-
 fn main() {
     let input = include_str!("./input1.txt");
     let output = process(input);
@@ -11,8 +9,10 @@ struct Number {
     chars: Vec<char>,
     indices: Vec<usize>,
 }
+
 #[derive(Debug)]
 struct Symbol {
+    character: char,
     index: usize,
 }
 
@@ -40,6 +40,7 @@ fn process(input: &str) -> u32 {
             } else {
                 if character != '.' {
                     symbols.push(Symbol {
+                        character,
                         index: row_idx * n_col + col_idx,
                     });
                 }
@@ -57,37 +58,39 @@ fn process(input: &str) -> u32 {
         }
     }
 
-    let mut adjacent_numbers: Vec<&Number> = vec![];
-    for number in &numbers {
-        let mut unique_neighbor_indices: HashSet<usize> = HashSet::new();
-        for idx in &number.indices {
-            let neighbor_indices: Vec<i32> = vec![
-                *idx as i32 - 1,
-                *idx as i32 + 1,
-                *idx as i32 - n_col as i32,
-                *idx as i32 + n_col as i32,
-                *idx as i32 - n_col as i32 - 1,
-                *idx as i32 - n_col as i32 + 1,
-                *idx as i32 + n_col as i32 - 1,
-                *idx as i32 + n_col as i32 + 1,
-            ];
-            neighbor_indices.into_iter().for_each(|idx| {
-                if idx >= 0 {
-                    unique_neighbor_indices.insert(idx as usize);
-                }
-            });
+    let mut score = 0;
+    let symbols: Vec<Symbol> = symbols
+        .into_iter()
+        .filter(|symbol| symbol.character == '*')
+        .collect();
+    for symbol in symbols.iter() {
+        let mut adjacent_numbers: Vec<&Number> = vec![];
+        let neighbor_indices = vec![
+            symbol.index - 1,
+            symbol.index + 1,
+            symbol.index - n_col,
+            symbol.index + n_col,
+            symbol.index - n_col - 1,
+            symbol.index - n_col + 1,
+            symbol.index + n_col - 1,
+            symbol.index + n_col + 1,
+        ];
+        for number in &numbers {
+            if neighbor_indices
+                .iter()
+                .any(|idx| number.indices.contains(idx))
+            {
+                adjacent_numbers.push(number);
+            }
         }
-        if symbols
-            .iter()
-            .any(|symbol| unique_neighbor_indices.contains(&symbol.index))
-        {
-            adjacent_numbers.push(number);
+        if adjacent_numbers.len() == 2 {
+            score += adjacent_numbers
+                .into_iter()
+                .map(|number| number.to_digit())
+                .product::<u32>();
         }
     }
-    adjacent_numbers
-        .iter()
-        .map(|number| number.to_digit())
-        .sum::<u32>()
+    score
 }
 
 #[cfg(test)]
@@ -106,6 +109,6 @@ mod tests {
 ......755.
 ...$.*....
 .664.598..";
-        assert_eq!(process(input), 4361);
+        assert_eq!(process(input), 467835);
     }
 }
