@@ -47,10 +47,12 @@ fn process(input: &str) -> usize {
         acc
     });
 
-    let matches: Vec<usize> = cards.iter().map(|x| x.matches()).collect();
     let total_cards: BTreeMap<usize, usize> = (1..=cards.len()).map(|x| (x, 1)).collect();
-
-    matches
+    
+    cards
+        .iter()
+        .map(|x| x.matches())
+        .collect::<Vec<usize>>()
         .iter()
         .enumerate()
         .fold(total_cards, |mut acc, (idx, card_id)| {
